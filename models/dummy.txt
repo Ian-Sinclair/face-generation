@@ -1,0 +1,10 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%  Model Information Directory  %%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Summary
+    - Directory to store model information including
+        - Saved Model Parameters
+        - Visualizations / output examples
+        - Model architecture diagrams
+        - Metrics and accuracy plots
