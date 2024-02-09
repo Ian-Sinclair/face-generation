@@ -1,0 +1,8 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%  Raw Data Storage Directory  %%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Summary
+    - Directory to store raw data files
+    - No data files are included included in the remote repository
+      and so will likely need to be added locally to run training scripts.
