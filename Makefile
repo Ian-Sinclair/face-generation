@@ -5,8 +5,8 @@
 # compiling the project, running tests, and building distribution packages.
 
 
-
-VENV=venv  # Folder name to store virtual environment
+# Folder name to store virtual environment
+VENV=venv
 BIN=${VENV}/bin/
 
 # Define ANSI escape sequences for colors
@@ -53,13 +53,11 @@ compile: setup.py
 	${BIN}pip3 install -e .
 	@echo "$(GREEN)Project Source Compiled Successfully$(RESET)"
 
-
-.PHONY: run
-run: install compile
-	@echo "$(GREEN)Project Initalized$(RESET)"
-
+#  This target installs dependencies, compiles the project, 
+#  and runs all unit tests in src/tests directory
 .PHONY: test
 test: install compile
+	${BIN}tox
 	@echo "$(GREEN)Completed Tests$(RESET)"
 
 #  This target cleans the target directories, installs dependencies, 
