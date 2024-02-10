@@ -45,6 +45,7 @@ install: activate_venv requirements.txt
 	${BIN}pip3 install -r requirements.txt
 	@echo "$(GREEN)Dependencies Installed To ${BIN}$(RESET)"
 
+
 #  This target installs the project in 'editable' mode, 
 #  allowing changes to the source to be immediately reflected 
 #  without needing to reinstall the package.
