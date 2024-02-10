@@ -1,0 +1,8 @@
+setuptools
+build
+tox
+pytest
+numpy
+h5py
+tensorflow-macos
+tensorflow-metal
