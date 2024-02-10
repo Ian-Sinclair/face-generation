@@ -4,5 +4,6 @@ tox
 pytest
 numpy
 h5py
+tensorflow
 tensorflow-macos
 tensorflow-metal
