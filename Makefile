@@ -61,6 +61,12 @@ test: install compile
 	${BIN}tox
 	@echo "$(GREEN)Completed Tests$(RESET)"
 
+
+.PHONY: trainMnist
+train_mnist: install compile
+	${BIN}python3 src/main/scripts/trainingScripts/mnistBasicTrainingCycle.py
+	@echo "$(GREEN)Process Completed$(RESET)"
+
 #  This target cleans the target directories, installs dependencies, 
 #  compiles the project, and builds distribution packages using Python's 
 #  build module.
