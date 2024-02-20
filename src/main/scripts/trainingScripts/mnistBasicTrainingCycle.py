@@ -14,7 +14,7 @@ if __name__ == "__main__":
     gan = WGAN_GP(
         image_size = (28,28,1),
 
-        latent_space_dim=200,
+        latent_space_dim=10,
 
         generator_filter_sizes=[128,64,64,1],
         generator_kernel_sizes=[5,5,5,5],
@@ -26,7 +26,7 @@ if __name__ == "__main__":
     )
 
     BATCH_SIZE = 32
-    EPOCHS = 30
+    EPOCHS = 8
     
     gan.train(x_train=x_train, batch_size=BATCH_SIZE, epochs=EPOCHS, save_folder=METRICS_SAVE_PATH)
 
