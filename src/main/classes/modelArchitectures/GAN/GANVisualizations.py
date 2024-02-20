@@ -5,6 +5,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from keras import Model
 import tensorflow as tf
+import numpy as np
 import os
 import math
 
@@ -19,6 +20,7 @@ class GANVisualizations():
             self.ax.set_xlabel(self.x_label)
             self.ax.set_ylabel(y_axis_title)
             self.ax.set_title(plot_title)
+            self.ax.grid(True)
             self.y_labels = {label : [] for label in y_labels}
             self.data = {self.x_label: [], **self.y_labels}
 
@@ -26,11 +28,12 @@ class GANVisualizations():
             self.ax.clear()  # Clear the plot before updating
 
             # Update plot data
+            self.ax.grid(True)
             self.data[self.x_label].append(x_data)
             for label, item in y_data.items():
                 if label in self.y_labels :
                     self.data[label].append(item)
-                    self.ax.plot(self.data[self.x_label], self.data[label], label=label)
+                    self.ax.plot(self.data[self.x_label], self.data[label], label=label, linewidth=0.5)
 
             self.ax.legend()
             return self
@@ -39,7 +42,7 @@ class GANVisualizations():
             plt.show()
             return self
 
-        def save_plot(self, save_path : str, file_name : str = "loss_plot.png") -> Self:
+        def save_plot(self, save_path : str, file_name : str = "loss_plot.jpg") -> Self:
             if not DirectoryUtil.isValidDirectory(save_path):
                 print(f"Directory Not Found at [{save_path}]")
                 try : 
@@ -62,7 +65,7 @@ class GANVisualizations():
             self.images = None
         
         def initialize_random_latent_samples(self, shape : Tuple[int,int]) -> Self :
-            self.latent_sample = tf.random.normal(shape=shape)
+            self.latent_sample = np.random.normal(size=shape)
             return self
 
         def update_latent_samples(self, samples : tf.Tensor) -> Self :
@@ -77,27 +80,27 @@ class GANVisualizations():
             return self
         
         def _validate_latent_sample(self) -> bool:
-            if self.latent_sample == None :
+            if self.latent_sample is None :
                 return False
             return True
         def _validate_images(self) -> bool :
-            if self.images == None :
+            if self.images is None :
                 return False
             return True
 
 
         # Function to plot and save the generated images
-        def plot_and_save_images(self, save_folder : str, file_name : str = "generated_images.png") -> Self:
+        def plot_and_save_images(self, save_folder : str, file_name : str = "generated_images.jpg") -> Self:
             if not self._validate_images() :
                 print(f"Images not found...")
-                return Self
+                return self
             if not DirectoryUtil.isValidDirectory(save_folder):
                 print(f"Directory Not Found at [{save_folder}]")
                 try : 
                     DirectoryUtil.promptToCreateDirectory(save_folder) # Throws value error
                 except ValueError as e:
                     print(e)
-                    return Self
+                    return self
             
             if DirectoryUtil.isProtectedFile(save_folder,file_name) :
                 print(f"ABORTING: File [{os.path.join(save_folder, file_name)}] is protected - cannot overwrite file")
@@ -121,8 +124,6 @@ class GANVisualizations():
             for i in range(num_images, num_rows * num_cols):
                 axes.flatten()[i].axis('off')
 
-            
-            plt.tight_layout()
             plt.savefig(os.path.join(save_folder, file_name), bbox_inches='tight')
             plt.close()
 

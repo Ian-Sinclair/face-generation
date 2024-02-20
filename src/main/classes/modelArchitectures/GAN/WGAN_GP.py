@@ -213,8 +213,7 @@ class WGAN_GP(BaseModel):
             for step in range(num_batches) :
                 overhead_start_time = time.time()
                 critic_start_time = time.time()
-
-                for _ in range(5):
+                for _ in range(2):
                     self.loss_metrics.critic_real_loss, \
                     self.loss_metrics.critic_synthetic_loss, \
                     self.loss_metrics.critic_interpolated_loss = self.train_critic(
@@ -229,17 +228,15 @@ class WGAN_GP(BaseModel):
                 self.time_metrics.generator_step_time = time.time() - generator_start_time
 
                 loss_plot_handler\
-                    .update_plot(x_data=(epoch+1)*(step+1), y_data=self.loss_metrics.toJSON())\
+                    .update_plot(x_data=(epoch*num_batches)+step, y_data=self.loss_metrics.toJSON())\
                     .save_plot(save_path=os.path.join(save_folder,"viz/"))
 
                 #  Generates synthetic images plot
-                if step % 50 == 0:
+                if step % 10 == 0:
                     synthetic_images_plot_handler\
+                        .initialize_random_latent_samples(shape=(batch_size,self.generator.latent_dim))\
                         .generate_images(model=self.generator.model)\
                         .plot_and_save_images(save_folder=os.path.join(save_folder,"viz/"))
-                    
-                
-
                 self.time_metrics.overhead_step_time = (time.time() - overhead_start_time) - (self.time_metrics.generator_step_time + self.time_metrics.critic_step_time)
                 self.time_metrics.total_runtime = time.time() - total_runtime_start_time
 
@@ -306,7 +303,7 @@ class WGAN_GP(BaseModel):
         return True
 
 
-    @tf.function()
+    #@tf.function()
     def train_generator(
         self, 
         batch_size : int,
@@ -322,18 +319,18 @@ class WGAN_GP(BaseModel):
         Returns:
             tf.Tensor: Loss of the generator.
         """
-        latent_batch = tf.random.normal(shape=(batch_size, self.generator.latent_dim))
+        latent_batch = np.random.normal(size=(batch_size, self.generator.latent_dim))
         y_true = tf.ones(shape=(batch_size, 1))
         with tf.GradientTape() as tape:
-            synthetic_images = self.generator.model(latent_batch, training = True)
-            belief_tensor = self.critic.model(synthetic_images, training = True)
+            synthetic_images = self.generator.model(latent_batch)
+            belief_tensor = self.critic.model(synthetic_images)
             loss = GANLosses.wasserstein(y_true=y_true, y_pred=belief_tensor)
 
             grads = tape.gradient(loss, self.generator.model.trainable_variables)
             optimizer.apply_gradients(zip(grads, self.generator.model.trainable_variables))
         return loss
     
-    @tf.function()
+    #@tf.function()
     def train_critic(
             self,
             x_train : np.ndarray,
@@ -360,19 +357,19 @@ class WGAN_GP(BaseModel):
         valid = tf.ones(shape=(batch_size, 1))
         fake = -tf.ones(shape=(batch_size, 1))
 
-        idx = tf.random.uniform(shape=(batch_size,), minval=0, maxval=x_train.shape[0], dtype=tf.int32)
-        real_images = tf.gather(x_train, idx)
+        idx = np.random.randint(0, x_train.shape[0], batch_size)
+        real_images = x_train[idx]
 
-        latent_batch = tf.random.normal(shape=(batch_size, self.generator.latent_dim))
-        synthetic_images = self.generator.model(latent_batch, training = True)
+        latent_batch = np.random.normal(size=(batch_size, self.generator.latent_dim))
+        synthetic_images = self.generator.model(latent_batch)
 
         with tf.GradientTape() as tape:
-            real_belief_tensor = self.critic.model(real_images, training = True)
-            synthetic_belief_tensor = self.critic.model(synthetic_images, training = True)
+            real_belief_tensor = self.critic.model(real_images)
+            synthetic_belief_tensor = self.critic.model(synthetic_images)
             with tf.GradientTape() as g:
                 interpolated_images = interpolate_images(synthetic_images, real_images)
                 g.watch(interpolated_images)
-                interpolated_belief_tensor = self.critic.model(interpolated_images, training = True)
+                interpolated_belief_tensor = self.critic.model(interpolated_images)
                 gradients = g.gradient(interpolated_belief_tensor,interpolated_images)
 
             real_loss = GANLosses.wasserstein(y_true=valid, y_pred=real_belief_tensor)
@@ -381,8 +378,8 @@ class WGAN_GP(BaseModel):
 
             
             loss = real_loss + synthetic_loss + interpolated_loss
-            grads = tape.gradient(loss, self.critic.model.trainable_variables)
-            optimizer.apply_gradients(zip(grads, self.critic.model.trainable_variables))
+        grads = tape.gradient(loss, self.critic.model.trainable_variables)
+        optimizer.apply_gradients(zip(grads, self.critic.model.trainable_variables))
         
         return real_loss, synthetic_loss, interpolated_loss
 
@@ -419,7 +416,7 @@ class WGAN_GP(BaseModel):
                 DirectoryUtil.promptToCreateDirectory(path) # Throws value error
             except ValueError as e:
                 print(e)
-                return Self
+                return self
         
         if DirectoryUtil.isProtectedFile(path,WGAN_GP.CLASS_FILENAME) :
             print(f"ABORTING: File [{os.path.join(path, WGAN_GP.CLASS_FILENAME)}] is protected - cannot overwrite file")

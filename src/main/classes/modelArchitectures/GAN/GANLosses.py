@@ -12,6 +12,7 @@ class GANLosses(losses.Loss):
         return -K.mean(y_true * y_pred)
     
     @staticmethod
+    #@tf.function()
     def gradient_penalty_loss(gradients):
         # compute the euclidean norm by squaring ...
         gradients_sqr = tf.square(gradients)
