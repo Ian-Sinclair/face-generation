@@ -106,7 +106,8 @@ class Generator(BaseModel) :
         
         x = layers.Dense(
             np.prod(self.init_conv_size),
-            kernel_initializer=RandomNormal(mean=0., stddev=0.02))(self.input_layer)
+            #kernel_initializer=RandomNormal(mean=0., stddev=0.02)
+            )(self.input_layer)
         
         if self.use_batch_norm : 
             x = layers.BatchNormalization(momentum=self.batch_norm_momentum)(x)
@@ -125,7 +126,7 @@ class Generator(BaseModel) :
                                            kernel_size=self.kernels[i],
                                            strides=1,
                                            padding="same",
-                                           kernel_initializer=RandomNormal(mean=0., stddev=0.02),
+                                           #kernel_initializer=RandomNormal(mean=0., stddev=0.02),
                                            name = f'{self.__class__.__name__}_Conv2D_{i}'
                                            )
             x = conv_layer(x)
