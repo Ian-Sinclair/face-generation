@@ -64,6 +64,7 @@ test: install compile
 	@echo "$(GREEN)Completed Tests$(RESET)"
 
 
+
 .PHONY: train_mnist
 train_mnist: install compile
 	${BIN}python3 src/main/scripts/trainingScripts/mnistBasicTrainingCycle.py

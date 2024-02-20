@@ -124,7 +124,6 @@ class GANVisualizations():
             for i in range(num_images, num_rows * num_cols):
                 axes.flatten()[i].axis('off')
 
-            
             plt.savefig(os.path.join(save_folder, file_name), bbox_inches='tight')
             plt.close()
 

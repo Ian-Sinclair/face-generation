@@ -237,7 +237,6 @@ class WGAN_GP(BaseModel):
                         .initialize_random_latent_samples(shape=(batch_size,self.generator.latent_dim))\
                         .generate_images(model=self.generator.model)\
                         .plot_and_save_images(save_folder=os.path.join(save_folder,"viz/"))
-                    
                 self.time_metrics.overhead_step_time = (time.time() - overhead_start_time) - (self.time_metrics.generator_step_time + self.time_metrics.critic_step_time)
                 self.time_metrics.total_runtime = time.time() - total_runtime_start_time
 
