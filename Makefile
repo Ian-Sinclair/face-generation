@@ -9,6 +9,8 @@
 VENV=venv
 BIN=${VENV}/bin/
 
+NUM_EPOCHS=150
+
 # Define ANSI escape sequences for colors
 GREEN := $(shell tput -Txterm setaf 2)
 YELLOW := $(shell tput -Txterm setaf 3)
@@ -62,10 +64,23 @@ test: install compile
 	@echo "$(GREEN)Completed Tests$(RESET)"
 
 
-.PHONY: trainMnist
+.PHONY: train_mnist
 train_mnist: install compile
 	${BIN}python3 src/main/scripts/trainingScripts/mnistBasicTrainingCycle.py
 	@echo "$(GREEN)Process Completed$(RESET)"
+
+.PHONY: train_anime_faces
+train_anime_faces: install compile
+	${BIN}python3 src/main/scripts/trainingScripts/animeFacesTrainingCycle.py
+	@echo "$(GREEN)Process Completed$(RESET)"
+
+.PHONY: pipeline_train_animeFaces
+pipeline_train_animeFaces: install compile
+	for ((i=1; i <= ${NUM_EPOCHS}; ++i)) do \
+		echo "Initializing Epoch $${i}"; \
+		${BIN}python3 src/main/pipelines/animeFacesTrainingPipeline/collect_data.py; \
+		${BIN}python3 src/main/pipelines/animeFacesTrainingPipeline/run_epoch_cycle.py; \
+	done
 
 #  This target cleans the target directories, installs dependencies, 
 #  compiles the project, and builds distribution packages using Python's 
