@@ -146,7 +146,7 @@ class BaseModel():
             print(f"REQUIRED ELEMENT FAILURE: Model is [{self.model}] cannot load weights")
             return self
         
-        if not DirectoryUtil.isValidFile(os.path.join(path + BaseModel.MODEL_WEIGHTS_FILENAME)):
+        if not DirectoryUtil.isValidFile(path=path, file_name=BaseModel.MODEL_WEIGHTS_FILENAME):
             print(f"REQUIRED ELEMENT FAILURE: Directory Not Found at [{os.path.join(path + BaseModel.MODEL_WEIGHTS_FILENAME)}]")
             print(f"Cannot load model weights")
             raise ValueError(f"REQUIRED ELEMENT FAILURE: Directory Not Found at [{os.path.join(path + BaseModel.MODEL_WEIGHTS_FILENAME)}]\n Cannot Load Model Weights")

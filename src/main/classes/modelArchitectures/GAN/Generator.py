@@ -5,7 +5,6 @@ from keras import backend as K
 from keras.initializers import RandomNormal
 import numpy as np
 
-from typing_extensions import Self
 from typing import Literal, Callable
 
 class Generator(BaseModel) :
@@ -106,7 +105,7 @@ class Generator(BaseModel) :
         
         x = layers.Dense(
             np.prod(self.init_conv_size),
-            #kernel_initializer=RandomNormal(mean=0., stddev=0.02)
+            #kernel_initializer=RandomNormal(mean=0., stddev=0.1)
             )(self.input_layer)
         
         if self.use_batch_norm : 
@@ -126,7 +125,7 @@ class Generator(BaseModel) :
                                            kernel_size=self.kernels[i],
                                            strides=1,
                                            padding="same",
-                                           #kernel_initializer=RandomNormal(mean=0., stddev=0.02),
+                                           #kernel_initializer=RandomNormal(mean=0., stddev=0.1),
                                            name = f'{self.__class__.__name__}_Conv2D_{i}'
                                            )
             x = conv_layer(x)

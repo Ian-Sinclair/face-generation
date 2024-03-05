@@ -3,7 +3,6 @@ from src.main.classes.modelArchitectures import BaseModel
 from keras import Model, Input, layers
 from keras.initializers import RandomNormal
 
-from typing_extensions import Self
 from typing import Literal, Callable
 
 class Critic(BaseModel):
@@ -85,7 +84,7 @@ class Critic(BaseModel):
                 kernel_size=self.kernels[i],
                 strides=self.strides[i],
                 padding="same",
-                #kernel_initializer=RandomNormal(mean=0., stddev=0.02),
+                #kernel_initializer=RandomNormal(mean=0., stddev=0.1),
                 name = f'{self.__class__.__name__}_Conv2D_{i}'
             )
             x = conv_layer(x)
@@ -99,7 +98,7 @@ class Critic(BaseModel):
         self.output_layer = layers.Dense(
             units=1, 
             activation=None, 
-            #kernel_initializer=RandomNormal(mean=0., stddev=0.02),
+            #kernel_initializer=RandomNormal(mean=0., stddev=0.1),
             name = f'{self.__class__.__name__}_output_layer'
         )(x)
 
