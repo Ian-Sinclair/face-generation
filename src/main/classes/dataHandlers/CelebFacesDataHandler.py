@@ -1,10 +1,10 @@
 """
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %%%%  Anime Faces Data Handler  %%%%%
+        %%%%  Celeb Faces Data Handler  %%%%%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     Summary
-        - Data handler class for the AnimeFaces dataset
+        - Data handler class for the Celeb_A dataset
         
         Manages collecting dataset into active menory, 
         pre-processing data, and saving / loading datasets as h5 files
@@ -18,13 +18,15 @@ import os
 from PIL import Image
 from typing_extensions import Self
 
-class AnimeFacesDataHandler(Base):
-    DATA_PATH = "data/animeFaces/"
+
+class CelebFacesDataHandler(Base):
+
+    DATA_PATH = "data/celeb_a/archive/"
 
     TRAINING_DATA_NAME = "trainingData.h5"
     TEST_DATA_NAME = "testData.h5"
 
-    IMAGE_PATH = "images/"
+    IMAGE_PATH = "img_align_celeba/img_align_celeba/"
 
     def __init__(self, image_size : tuple, collection_size : int):
         self.x_train = None
@@ -37,7 +39,7 @@ class AnimeFacesDataHandler(Base):
         self.images_list_full = None
         self.image_size = image_size
         self.collectionSize = collection_size
-    
+
     def collect_data(self, collectionSize = None) -> Self:
         def load_image(file_path):
             return np.array(Image.open(file_path).resize(self.image_size))
@@ -47,44 +49,28 @@ class AnimeFacesDataHandler(Base):
             return img
         
         collectionSize = collectionSize or self.collectionSize
-        self.images_dir = AnimeFacesDataHandler.DATA_PATH + AnimeFacesDataHandler.IMAGE_PATH
+        self.images_dir = CelebFacesDataHandler.DATA_PATH + CelebFacesDataHandler.IMAGE_PATH
 
         if type(self.images_list_full) == type(None):
             self.images_list_full = np.array(list(os.listdir(self.images_dir)))
             print(f"{len(self.images_list_full)} image files detected in {self.images_dir}")
 
-        
         images_list = np.random.choice(self.images_list_full, size=collectionSize, replace=False)
 
         self.x_train, self.y_train = [],[]
         self.x_test, self.y_test = [],[]
 
-        # Split the images_list into train and test
-        split_index = int(len(images_list) * 0.9)
-        train_images_list = images_list[:split_index]
-        test_images_list = images_list[split_index:]
-
-        for i,file_name in enumerate(train_images_list):
-            print(f"Collecting Image: {i+1}/{len(train_images_list)} \t\t File Name: {file_name}", end='\r' if i+1 != len(images_list) else None)  # Display the current progress
+        for i,file_name in enumerate(images_list):
+            print(f"Collecting Image: {i+1}/{len(images_list)} \t\t File Name: {file_name}", end='\r' if i+1 != len(images_list) else None)  # Display the current progress
             img = process_path(file_name)
             self.x_train.append(img)
-            self.y_train.append(0)
-        
-        for i, file_name in enumerate(test_images_list):
-            print(f"Collecting Test Image: {i+1}/{len(test_images_list)} \t\t File Name: {file_name}", 
-                end='\r' if i+1 != len(test_images_list) else None)  
-            img = process_path(file_name)
-            self.x_test.append(img)
-            self.y_test.append(0)
 
         self.x_train = np.array(self.x_train)
-        self.x_test = np.array(self.x_test)
 
         return self
     
     def process_data(self) -> Self:
         self.x_train = self.x_train.astype('float32') / 255.0
-        self.x_test = self.x_test.astype('float32') / 255.0
 
         return self
     
@@ -117,17 +103,17 @@ class AnimeFacesDataHandler(Base):
             data=self.x_train,
             meta=self.y_train,
             filePath=path,
-            fileName=AnimeFacesDataHandler.TRAINING_DATA_NAME
+            fileName=CelebFacesDataHandler.TRAINING_DATA_NAME
             )
         Base.store_hdf5(
             data=self.x_test,
             meta=self.y_test,
             filePath=path,
-            fileName=AnimeFacesDataHandler.TEST_DATA_NAME
+            fileName=CelebFacesDataHandler.TEST_DATA_NAME
             )
         
         return self
-    
+
     def read_local_data(self, file_path) -> Self:
         """
         Read the processed data from the specified file path.
@@ -142,22 +128,22 @@ class AnimeFacesDataHandler(Base):
         """
         self.clear_data()
 
-        if DirectoryUtil.isValidFile(file_path, AnimeFacesDataHandler.TRAINING_DATA_NAME):
+        if DirectoryUtil.isValidFile(file_path, CelebFacesDataHandler.TRAINING_DATA_NAME):
             self.x_train, self.y_train = Base.read_hdf5(filePath=file_path,
-                                                        fileName=AnimeFacesDataHandler.TRAINING_DATA_NAME
+                                                        fileName=CelebFacesDataHandler.TRAINING_DATA_NAME
                                                         )
         else :
-            print(f"File [{AnimeFacesDataHandler.TRAINING_DATA_NAME}] Not Found at [{file_path}].")
+            print(f"File [{CelebFacesDataHandler.TRAINING_DATA_NAME}] Not Found at [{file_path}].")
         
-        if DirectoryUtil.isValidFile(file_path, AnimeFacesDataHandler.TEST_DATA_NAME):
+        if DirectoryUtil.isValidFile(file_path, CelebFacesDataHandler.TEST_DATA_NAME):
             self.x_test, self.y_test = Base.read_hdf5(filePath=file_path,
-                                                      fileName=AnimeFacesDataHandler.TEST_DATA_NAME
+                                                      fileName=CelebFacesDataHandler.TEST_DATA_NAME
                                                       )
         else:
-            print(f"File [{AnimeFacesDataHandler.TEST_DATA_NAME}] Not Found at [{file_path}].")
+            print(f"File [{CelebFacesDataHandler.TEST_DATA_NAME}] Not Found at [{file_path}].")
         
         return self
 
 if __name__ == "__main__": 
-    raise SystemError(f"Class File [{AnimeFacesDataHandler.__name__}] Cannot Be Called As Main")
+    raise SystemError(f"Class File [{CelebFacesDataHandler.__name__}] Cannot Be Called As Main")
 
