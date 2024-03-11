@@ -30,16 +30,16 @@ if __name__ == "__main__":
 
             latent_space_dim=200,
 
-            generator_filter_sizes=[256,128,64,3],
-            generator_kernel_sizes=[5,5,5,5],
-            generator_upsample_sizes = [2,2,2,2],
+            generator_filter_sizes=[512,256,128,64,3],
+            generator_kernel_sizes=[5,5,5,5,5],
+            generator_upsample_sizes = [2,2,2,2,2],
 
-            critic_filter_sizes=[64,128,256,256],
+            critic_filter_sizes=[64,128,256,512],
             critic_kernel_sizes=[5,5,5,5],
             critic_strides=[2,2,2,1],
-            critic_use_drop_out=False,
+            critic_use_drop_out=True,
             generator_use_batch_norm=True,
-            generator_use_drop_out=False,
+            generator_use_drop_out=True,
             critic_activation_functions=["leaky_relu"],
         )
 

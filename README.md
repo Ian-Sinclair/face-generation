@@ -1,6 +1,12 @@
 # Generative AI - Face Generation
 
-Generative AI project to explore the generation of unique faces. This project showcases both ML Ops and WGAN with gradient penalties to generate photo realistic images of both human and anime faces.
+This project leverages generative artificial intelligence techniques to create realistic synthetic faces. The project structure is designed to facilitate seamless development, testing, and continuous integration (CI) and deployment (CD) processes. Key elements of the project include:
+
+- **Project Structure**: The project is organized into two main components: a library and an application. The library contains modules for data handling, model architectures, and project management utilities. The application component comprises training scripts and pipelines for running experiments and training cycles.
+
+- **Build and Test Automation**: Automation is integrated throughout the development workflow. Build automation tools streamline the process of setting up virtual environments, installing dependencies, compiling source code, and building distribution packages. Test automation ensures the reliability and integrity of the codebase by running unit tests and validation checks.
+
+By embracing these principles of project organization, automation, and continuous development, we aim to deliver a robust and scalable solution for generating synthetic faces with generative AI techniques.
 
 ## Training Results
 
@@ -8,7 +14,17 @@ Generative AI project to explore the generation of unique faces. This project sh
 
 ## WGAN With Gradient Penalty
 
-Generative Advisarial Networks
+Generative Adversarial Networks (GANs) have emerged as a powerful framework for generating realistic synthetic data, including images, audio, and text. GANs consist of two neural networks, a generator and a discriminator, engaged in a game-like competition. The generator attempts to produce synthetic data samples that are indistinguishable from real data, while the discriminator learns to differentiate between real and fake samples.
+
+However, traditional GANs suffer from instability during training and mode collapse, where the generator fails to produce diverse outputs. To address these challenges, Wasserstein GANs (WGANs) were introduced, which leverage the Wasserstein distance metric to provide a more stable and meaningful objective function.
+
+Wasserstein GANs with Gradient Penalty (WGAN-GP) further improve upon WGANs by incorporating a gradient penalty term into the loss function. This penalty encourages smoothness in the learned distribution and helps prevent mode collapse.
+
+The Wasserstein loss, also known as Earth Mover's distance, measures the distance between probability distributions by computing the minimum cost of transforming one distribution into another. It provides a more meaningful and stable training signal compared to traditional binary cross-entropy loss used in standard GANs.
+
+In the context of WGAN-GP, the interpolated loss is used as part of the gradient penalty calculation. Interpolated loss involves generating interpolated samples along straight lines between pairs of real and generated samples and penalizing the gradients of the discriminator with respect to these interpolated samples. This technique encourages the discriminator to be locally Lipschitz continuous, which is a key requirement for the Wasserstein distance calculation.
+
+By leveraging these advancements in GAN architecture and loss functions, our project aims to harness the power of generative AI to produce high-quality synthetic faces that exhibit realistic features and diversity.
 
 ## ML Ops and Continuous Development
 
