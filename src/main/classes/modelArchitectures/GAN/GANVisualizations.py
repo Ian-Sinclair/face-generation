@@ -15,17 +15,23 @@ from typing import Tuple
 class GANVisualizations():
     class Line_Plot_Handler:
         def __init__(self, x_label : str, y_labels : list[str], y_axis_title = "Loss", plot_title = "Loss Plot"):
+            self.y_axis_title = y_axis_title
+            self.plot_title = plot_title
             self.fig, self.ax = plt.subplots()
             self.x_label : str = x_label
             self.ax.set_xlabel(self.x_label)
-            self.ax.set_ylabel(y_axis_title)
-            self.ax.set_title(plot_title)
+            self.ax.set_ylabel(self.y_axis_title)
+            self.ax.set_title(self.plot_title)
             self.ax.grid(True)
             self.y_labels = {label : [] for label in y_labels}
             self.data = {self.x_label: [], **self.y_labels}
 
         def update_plot(self, x_data : int, y_data : dict) -> Self:
             self.ax.clear()  # Clear the plot before updating
+
+            self.ax.set_xlabel(self.x_label)
+            self.ax.set_ylabel(self.y_axis_title)
+            self.ax.set_title(self.plot_title)
 
             # Update plot data
             self.ax.grid(True)
@@ -58,6 +64,50 @@ class GANVisualizations():
             self.fig.savefig(os.path.join(save_path,file_name))
             plt.close(self.fig)
             return self
+    
+    class Weight_Distribution_Handler():
+        def __init__(self, model : Model, plot_title = "Weight Distributions", x_axis_title = "Weight Values"):
+            self.model = model
+            self.plot_title = plot_title
+            self.x_axis_title = x_axis_title
+            self.layers_with_weights = [layer for layer in model.layers if hasattr(layer, 'get_weights') and layer.get_weights()]
+            self.fig, self.axes = plt.subplots(nrows=len(self.layers_with_weights), ncols=1, figsize=(10, 3*len(self.layers_with_weights)),gridspec_kw={'wspace': 0.1, 'hspace': 1.5})
+            self.fig.suptitle(plot_title)
+
+        def update_plot_data(self, plot_title = None, x_axis_title = None) -> Self:
+            index = 0
+            for layer in self.model.layers:
+                if hasattr(layer, 'get_weights'):
+                    weights : list[np.ndarray] = layer.get_weights()
+                    if weights:
+                        flattened_weights = weights[0].flatten()
+                        self.axes[index].clear()  # Clear the plot before updating
+                        self.axes[index].hist(flattened_weights, bins=50)
+                        self.axes[index].set_title(f'Layer [{layer.name}] Weight Distribution')
+                        self.axes[index].set_xlabel(x_axis_title or self.x_axis_title)
+                        index += 1
+
+            if plot_title:
+                self.fig.suptitle(plot_title)
+            
+            return self
+
+        def save_plot(self, save_path : str, file_name : str = "weights_distribution_plot.jpg"):
+            if not DirectoryUtil.isValidDirectory(save_path):
+                print(f"Directory Not Found at [{save_path}]")
+                try : 
+                    DirectoryUtil.promptToCreateDirectory(save_path) # Throws value error
+                except ValueError as e:
+                    print(e)
+                    return
+                
+            if DirectoryUtil.isProtectedFile(save_path,file_name) :
+                print(f"ABORTING: File [{os.path.join(save_path, file_name)}] is protected - cannot overwrite file")
+                return
+            
+            self.fig.savefig(os.path.join(save_path,file_name))
+            plt.close(self.fig)
+
 
     class Generator_Images_Plot_Handler:
         def __init__(self):
