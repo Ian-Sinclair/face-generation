@@ -7,4 +7,5 @@ h5py
 pydot
 pandas
 matplotlib
-tensorflow
+tensorflow-macos
+tensorflow-metal

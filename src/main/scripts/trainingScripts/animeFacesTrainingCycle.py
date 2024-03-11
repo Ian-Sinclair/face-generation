@@ -1,6 +1,5 @@
 from src.main.classes.dataHandlers import AnimeFacesDataHandler
 from src.main.classes.modelArchitectures.GAN import WGAN_GP
-import os
 
 if __name__ == "__main__": 
 
