@@ -10,6 +10,18 @@ By embracing these principles of project organization, automation, and continuou
 
 ## Training Results
 
+<div style="text-align:center;">
+  <img src="misc/images/mnist-combined.gif" alt="Generated Images" width="80%">
+</div>
+
+-------
+
+<div style="text-align:center;">
+  <img src="misc/images/anime-faces-combined.gif" alt="Generated Images" width="80%">
+</div>
+
+-------
+
 -------
 
 ## WGAN With Gradient Penalty
