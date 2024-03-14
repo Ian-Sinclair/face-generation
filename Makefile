@@ -115,7 +115,7 @@ pipeline_train_celebFaces: install compile
 	for ((i=1; i <= ${NUM_EPOCHS}; ++i)) do \
 		echo "Initializing Epoch $${i}"; \
 		$(BIN)$(PYTHON) src/main/pipelines/celebFacesTrainingPipeline/collect_data.py; \
-		$(BIN)$(PYTHON) src/main/pipelines/celebFacesTrainingPipeline/run_epoch_cycle.py; \
+		$(BIN)$(PYTHON) src/main/pipelines/celebFacesTrainingPipeline/run_epoch_cycle.py $${i}; \
 	done
 
 #  This target cleans the target directories, installs dependencies, 
