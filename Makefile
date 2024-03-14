@@ -59,7 +59,7 @@ activate_venv:
 #  'requirements.txt' into the virtual environment.
 .PHONY: install
 install: activate_venv requirements.txt requirements-mac-metal.txt
-ifeq ($(OS),Darwin)
+ifeq ($(shell uname),Darwin)
 	$(BIN)$(PIP) install -r requirements-mac-metal.txt
 else
 	$(BIN)$(PIP) install -r requirements.txt
